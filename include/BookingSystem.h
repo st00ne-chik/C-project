@@ -47,3 +47,15 @@ public:
     static std::string toString(EventTypeFilter filter);
     static std::string toString(const std::shared_ptr<const BookingHistoryContext>& context,
                                 const HistoryPayload& payload);
+private:
+    std::vector<std::unique_ptr<Event>> events_;
+    std::vector<Booking> bookings_;
+    std::vector<HistoryEntry> history_;
+    std::unordered_map<int, std::shared_ptr<const BookingHistoryContext>> bookingHistoryContexts_;
+    int nextBookingId_{1};
+
+    std::optional<std::size_t> findEventIndexById(int eventId) const;
+    std::optional<std::size_t> findBookingIndexById(int bookingId) const;
+    static std::string currentTimestamp();
+    static bool isBlank(const std::string& value);
+};
