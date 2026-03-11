@@ -185,3 +185,41 @@ Booking BookingSystem::bookSeat(int eventId, int seatNumber, const std::string& 
 
     return booking;
 }
+
+void BookingSystem::cancelBooking(int bookingId) {
+    const auto bookingIndex = findBookingIndexById(bookingId);
+    if (!bookingIndex.has_value()) {
+        throw BookingNotFoundException(bookingId);
+    }
+
+    Booking& booking = bookings_.at(*bookingIndex);
+    if (booking.status == BookingStatus::Canceled) {
+        throw BookingException("Booking with id " + std::to_string(bookingId) + " is already canceled.");
+    }
+
+    const auto eventIndex = findEventIndexById(booking.eventId);
+    if (!eventIndex.has_value()) {
+        throw EventNotFoundException(booking.eventId);
+    }
+
+    Event& event = *events_.at(*eventIndex);
+    event.releaseSeat(booking.seatNumber);
+    booking.status = BookingStatus::Canceled;
+
+    auto contextIterator = bookingHistoryContexts_.find(booking.bookingId);
+    if (contextIterator == bookingHistoryContexts_.end()) {
+        const auto fallbackContext = std::make_shared<BookingHistoryContext>(BookingHistoryContext{
+            booking.bookingId, booking.eventId, booking.seatNumber, booking.customerName});
+        contextIterator = bookingHistoryContexts_.emplace(booking.bookingId, std::move(fallbackContext)).first;
+    }
+    const auto& context = contextIterator->second;
+    const HistoryPayload canceledPayload = BookingCanceledPayload{"Canceled by user request."};
+
+    history_.push_back(HistoryEntry{
+        HistoryActionType::Canceled,
+        booking.bookingId,
+        context,
+        canceledPayload,
+        toString(context, canceledPayload),
+        currentTimestamp()});
+}
