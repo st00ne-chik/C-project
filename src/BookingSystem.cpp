@@ -40,3 +40,66 @@ void BookingSystem::addEvent(std::unique_ptr<Event> event) {
 
     events_.push_back(std::move(event));
 }
+void BookingSystem::seedDemoData() {
+    events_.clear();
+    bookings_.clear();
+    history_.clear();
+    bookingHistoryContexts_.clear();
+    nextBookingId_ = 1;
+
+    addEvent(std::make_unique<Concert>(1,
+                                       "Rock Night",
+                                       "2026-04-20",
+                                       2300.0,
+                                       "Moscow Arena",
+                                       makeSeats(8),
+                                       "Neon Waves",
+                                       "Alternative Rock"));
+
+    addEvent(std::make_unique<Concert>(2,
+                                       "Symphony Evening",
+                                       "2026-05-02",
+                                       1800.0,
+                                       "Grand Hall",
+                                       makeSeats(6),
+                                       "City Orchestra",
+                                       "Classical"));
+
+    addEvent(std::make_unique<MovieSession>(3,
+                                            "Interstellar: Re-Run",
+                                            "2026-03-29",
+                                            600.0,
+                                            "Cinema Hall #2",
+                                            makeSeats(7),
+                                            "PG-13",
+                                            169));
+
+    addEvent(std::make_unique<MovieSession>(4,
+                                            "The Grand Budapest Hotel",
+                                            "2026-03-30",
+                                            550.0,
+                                            "Cinema Hall #1",
+                                            makeSeats(9),
+                                            "16+",
+                                            100));
+
+    addEvent(std::make_unique<TrainTrip>(5,
+                                         "Moscow -> Saint Petersburg",
+                                         "2026-04-05",
+                                         4200.0,
+                                         "Moscow - Saint Petersburg",
+                                         makeSeats(10),
+                                         "Moscow",
+                                         "Saint Petersburg",
+                                         "Sapsan-752A"));
+
+    addEvent(std::make_unique<TrainTrip>(6,
+                                         "Kazan -> Sochi",
+                                         "2026-04-09",
+                                         3900.0,
+                                         "Kazan - Sochi",
+                                         makeSeats(8),
+                                         "Kazan",
+                                         "Sochi",
+                                         "Volga-128"));
+}
