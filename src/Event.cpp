@@ -81,3 +81,54 @@ void Event::releaseSeat(int seatNumber) {
     }
     throw std::invalid_argument("Seat does not exist.");
 }
+
+int Event::freeSeatsCount() const {
+    return static_cast<int>(std::count_if(seats_.begin(), seats_.end(), [](const Seat& seat) {
+        return !seat.isBooked;
+    }));
+}
+
+Concert::Concert(int id,
+                 std::string title,
+                 std::string date,
+                 double price,
+                 std::string venueOrRoute,
+                 std::vector<Seat> seats,
+                 std::string performer,
+                 std::string genre)
+    : Event(id, std::move(title), std::move(date), price, std::move(venueOrRoute), std::move(seats)),
+      performer_(std::move(performer)),
+      genre_(std::move(genre)) {
+}
+
+std::string Concert::getType() const {
+    return "Concert";
+}
+
+std::string Concert::getDetails() const {
+    std::ostringstream output;
+    output << "Performer: " << performer_ << '\n'
+           << "Genre: " << genre_;
+    return output.str();
+}
+
+const std::string& Concert::getPerformer() const noexcept {
+    return performer_;
+}
+
+const std::string& Concert::getGenre() const noexcept {
+    return genre_;
+}
+
+MovieSession::MovieSession(int id,
+                           std::string title,
+                           std::string date,
+                           double price,
+                           std::string venueOrRoute,
+                           std::vector<Seat> seats,
+                           std::string movieRating,
+                           int durationMinutes)
+    : Event(id, std::move(title), std::move(date), price, std::move(venueOrRoute), std::move(seats)),
+      movieRating_(std::move(movieRating)),
+      durationMinutes_(durationMinutes) {
+}
