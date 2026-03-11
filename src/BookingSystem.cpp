@@ -121,3 +121,67 @@ std::vector<const Event*> BookingSystem::getEventsByType(EventTypeFilter filter)
     }
     return result;
 }
+
+
+std::optional<std::reference_wrapper<const Event>> BookingSystem::findEventById(int eventId) const {
+    const auto eventIndex = findEventIndexById(eventId);
+    if (!eventIndex.has_value()) {
+        return std::nullopt;
+    }
+    return std::cref(*events_.at(*eventIndex));
+}
+
+const Event& BookingSystem::getEventByIdOrThrow(int eventId) const {
+    const auto event = findEventById(eventId);
+    if (!event.has_value()) {
+        throw EventNotFoundException(eventId);
+    }
+    return event->get();
+}
+
+Booking BookingSystem::bookSeat(int eventId, int seatNumber, const std::string& customerName) {
+    if (isBlank(customerName)) {
+        throw BookingException("Customer name cannot be empty.");
+    }
+
+    const auto eventIndex = findEventIndexById(eventId);
+    if (!eventIndex.has_value()) {
+        throw EventNotFoundException(eventId);
+    }
+
+    Event& event = *events_.at(*eventIndex);
+    if (!event.hasSeat(seatNumber)) {
+        throw BookingException("Seat " + std::to_string(seatNumber) + " does not exist.");
+    }
+
+    if (event.isSeatBooked(seatNumber)) {
+        throw SeatAlreadyBookedException(eventId, seatNumber);
+    }
+
+    event.bookSeat(seatNumber);
+
+    Booking booking;
+    booking.bookingId = nextBookingId_++;
+    booking.eventId = eventId;
+    booking.seatNumber = seatNumber;
+    booking.customerName = customerName;
+    booking.status = BookingStatus::Active;
+    booking.timestamp = currentTimestamp();
+
+    bookings_.push_back(booking);
+
+    const auto context = std::make_shared<BookingHistoryContext>(
+        BookingHistoryContext{booking.bookingId, booking.eventId, booking.seatNumber, booking.customerName});
+    bookingHistoryContexts_[booking.bookingId] = context;
+    const HistoryPayload createdPayload = BookingCreatedPayload{};
+
+    history_.push_back(HistoryEntry{
+        HistoryActionType::Created,
+        booking.bookingId,
+        context,
+        createdPayload,
+        toString(context, createdPayload),
+        currentTimestamp()});
+
+    return booking;
+}
