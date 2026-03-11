@@ -325,3 +325,25 @@ std::optional<std::size_t> BookingSystem::findBookingIndexById(int bookingId) co
     }
     return std::nullopt;
 }
+
+std::string BookingSystem::currentTimestamp() {
+    const auto now = std::chrono::system_clock::now();
+    const std::time_t timeValue = std::chrono::system_clock::to_time_t(now);
+
+    std::tm localTime{};
+#if defined(_WIN32)
+    localtime_s(&localTime, &timeValue);
+#else
+    localtime_r(&timeValue, &localTime);
+#endif
+
+    std::ostringstream output;
+    output << std::put_time(&localTime, "%Y-%m-%d %H:%M:%S");
+    return output.str();
+}
+
+bool BookingSystem::isBlank(const std::string& value) {
+    return std::all_of(value.begin(), value.end(), [](unsigned char symbol) {
+        return std::isspace(symbol) != 0;
+    });
+}
