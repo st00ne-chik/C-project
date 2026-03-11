@@ -132,3 +132,22 @@ MovieSession::MovieSession(int id,
       movieRating_(std::move(movieRating)),
       durationMinutes_(durationMinutes) {
 }
+
+std::string MovieSession::getType() const {
+    return "MovieSession";
+}
+
+std::string MovieSession::getDetails() const {
+    std::ostringstream output;
+    output << "Rating: " << movieRating_ << '\n'
+           << "Duration: " << durationMinutes_ << " min";
+    return output.str();
+}
+
+const std::string& MovieSession::getMovieRating() const noexcept {
+    return movieRating_;
+}
+
+int MovieSession::getDurationMinutes() const noexcept {
+    return durationMinutes_;
+}
