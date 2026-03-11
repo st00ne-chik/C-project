@@ -22,3 +22,7 @@ public:
 
     const std::string& getMovieRating() const noexcept;
     int getDurationMinutes() const noexcept;
+private:
+    std::string movieRating_;
+    int durationMinutes_{};
+};
