@@ -223,3 +223,19 @@ void BookingSystem::cancelBooking(int bookingId) {
         toString(context, canceledPayload),
         currentTimestamp()});
 }
+
+const std::vector<Booking>& BookingSystem::getBookings() const noexcept {
+    return bookings_;
+}
+
+std::optional<Booking> BookingSystem::findBookingById(int bookingId) const {
+    const auto bookingIndex = findBookingIndexById(bookingId);
+    if (!bookingIndex.has_value()) {
+        return std::nullopt;
+    }
+    return bookings_.at(*bookingIndex);
+}
+
+int BookingSystem::countFreeSeats(int eventId) const {
+    return getEventByIdOrThrow(eventId).freeSeatsCount();
+}
