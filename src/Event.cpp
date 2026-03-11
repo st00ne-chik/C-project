@@ -52,3 +52,32 @@ bool Event::hasSeat(int seatNumber) const {
         return seat.seatNumber == seatNumber;
     });
 }
+
+bool Event::isSeatBooked(int seatNumber) const {
+    for (const auto& seat : seats_) {
+        if (seat.seatNumber == seatNumber) {
+            return seat.isBooked;
+        }
+    }
+    return false;
+}
+
+void Event::bookSeat(int seatNumber) {
+    for (auto& seat : seats_) {
+        if (seat.seatNumber == seatNumber) {
+            seat.isBooked = true;
+            return;
+        }
+    }
+    throw std::invalid_argument("Seat does not exist.");
+}
+
+void Event::releaseSeat(int seatNumber) {
+    for (auto& seat : seats_) {
+        if (seat.seatNumber == seatNumber) {
+            seat.isBooked = false;
+            return;
+        }
+    }
+    throw std::invalid_argument("Seat does not exist.");
+}
