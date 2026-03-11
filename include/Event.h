@@ -30,3 +30,11 @@ public:
 
     virtual std::string getType() const = 0;
     virtual std::string getDetails() const = 0;
+private:
+    int id_{};
+    std::string title_;
+    std::string date_;
+    double price_{};
+    std::string venueOrRoute_;
+    std::vector<Seat> seats_;
+};
