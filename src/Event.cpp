@@ -170,3 +170,23 @@ TrainTrip::TrainTrip(int id,
 std::string TrainTrip::getType() const {
     return "TrainTrip";
 }
+
+std::string TrainTrip::getDetails() const {
+    std::ostringstream output;
+    output << "Train number: " << trainNumber_ << '\n'
+           << "Departure city: " << departureCity_ << '\n'
+           << "Arrival city: " << arrivalCity_;
+    return output.str();
+}
+
+const std::string& TrainTrip::getDepartureCity() const noexcept {
+    return departureCity_;
+}
+
+const std::string& TrainTrip::getArrivalCity() const noexcept {
+    return arrivalCity_;
+}
+
+const std::string& TrainTrip::getTrainNumber() const noexcept {
+    return trainNumber_;
+}
