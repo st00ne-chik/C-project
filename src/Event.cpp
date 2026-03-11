@@ -151,3 +151,22 @@ const std::string& MovieSession::getMovieRating() const noexcept {
 int MovieSession::getDurationMinutes() const noexcept {
     return durationMinutes_;
 }
+
+TrainTrip::TrainTrip(int id,
+                     std::string title,
+                     std::string date,
+                     double price,
+                     std::string venueOrRoute,
+                     std::vector<Seat> seats,
+                     std::string departureCity,
+                     std::string arrivalCity,
+                     std::string trainNumber)
+    : Event(id, std::move(title), std::move(date), price, std::move(venueOrRoute), std::move(seats)),
+      departureCity_(std::move(departureCity)),
+      arrivalCity_(std::move(arrivalCity)),
+      trainNumber_(std::move(trainNumber)) {
+}
+
+std::string TrainTrip::getType() const {
+    return "TrainTrip";
+}
