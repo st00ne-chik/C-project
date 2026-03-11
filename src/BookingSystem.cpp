@@ -103,3 +103,21 @@ void BookingSystem::seedDemoData() {
                                          "Sochi",
                                          "Volga-128"));
 }
+
+
+const std::vector<std::unique_ptr<Event>>& BookingSystem::getEvents() const noexcept {
+    return events_;
+}
+
+std::vector<const Event*> BookingSystem::getEventsByType(EventTypeFilter filter) const {
+    std::vector<const Event*> result;
+    result.reserve(events_.size());
+
+    const std::string expectedType = toString(filter);
+    for (const auto& event : events_) {
+        if (filter == EventTypeFilter::All || event->getType() == expectedType) {
+            result.push_back(event.get());
+        }
+    }
+    return result;
+}
