@@ -239,3 +239,27 @@ std::optional<Booking> BookingSystem::findBookingById(int bookingId) const {
 int BookingSystem::countFreeSeats(int eventId) const {
     return getEventByIdOrThrow(eventId).freeSeatsCount();
 }
+
+std::optional<int> BookingSystem::findFirstFreeSeat(int eventId) const {
+    const Event& event = getEventByIdOrThrow(eventId);
+    for (const auto& seat : event.getSeats()) {
+        if (!seat.isBooked) {
+            return seat.seatNumber;
+        }
+    }
+    return std::nullopt;
+}
+
+const std::vector<HistoryEntry>& BookingSystem::getHistory() const noexcept {
+    return history_;
+}
+
+std::string BookingSystem::toString(BookingStatus status) {
+    switch (status) {
+        case BookingStatus::Active:
+            return "Active";
+        case BookingStatus::Canceled:
+            return "Canceled";
+    }
+    return "Unknown";
+}
