@@ -316,3 +316,12 @@ std::optional<std::size_t> BookingSystem::findEventIndexById(int eventId) const 
     }
     return std::nullopt;
 }
+
+std::optional<std::size_t> BookingSystem::findBookingIndexById(int bookingId) const {
+    for (std::size_t index = 0; index < bookings_.size(); ++index) {
+        if (bookings_.at(index).bookingId == bookingId) {
+            return index;
+        }
+    }
+    return std::nullopt;
+}
