@@ -263,3 +263,27 @@ std::string BookingSystem::toString(BookingStatus status) {
     }
     return "Unknown";
 }
+
+std::string BookingSystem::toString(HistoryActionType actionType) {
+    switch (actionType) {
+        case HistoryActionType::Created:
+            return "Created";
+        case HistoryActionType::Canceled:
+            return "Canceled";
+    }
+    return "Unknown";
+}
+
+std::string BookingSystem::toString(EventTypeFilter filter) {
+    switch (filter) {
+        case EventTypeFilter::All:
+            return "All";
+        case EventTypeFilter::Concert:
+            return "Concert";
+        case EventTypeFilter::MovieSession:
+            return "MovieSession";
+        case EventTypeFilter::TrainTrip:
+            return "TrainTrip";
+    }
+    return "Unknown";
+}
