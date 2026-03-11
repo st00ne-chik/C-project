@@ -287,3 +287,32 @@ std::string BookingSystem::toString(EventTypeFilter filter) {
     }
     return "Unknown";
 }
+
+std::string BookingSystem::toString(const std::shared_ptr<const BookingHistoryContext>& context,
+                                    const HistoryPayload& payload) {
+    if (!context) {
+        return "History context is missing.";
+    }
+
+    return std::visit(
+        [context](const auto& value) -> std::string {
+            using ValueType = std::decay_t<decltype(value)>;
+            if constexpr (std::is_same_v<ValueType, BookingCreatedPayload>) {
+                return "Created booking for event " + std::to_string(context->eventId) + ", seat " +
+                       std::to_string(context->seatNumber) + ".";
+            } else {
+                return "Canceled booking with id " + std::to_string(context->bookingId) +
+                       ". Reason: " + value.reason;
+            }
+        },
+        payload);
+}
+
+std::optional<std::size_t> BookingSystem::findEventIndexById(int eventId) const {
+    for (std::size_t index = 0; index < events_.size(); ++index) {
+        if (events_.at(index)->getId() == eventId) {
+            return index;
+        }
+    }
+    return std::nullopt;
+}
