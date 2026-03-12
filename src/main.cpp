@@ -195,3 +195,60 @@ void showMenu() {
 }
 
 }
+
+int main() {
+    setupConsoleEncoding();
+
+    BookingSystem system;
+    system.seedDemoData();
+
+    while (true) {
+        showMenu();
+        const int choice = readInt("Choose menu option: ");
+
+        if (choice == 0) {
+            std::cout << "Exiting application.\n";
+            break;
+        }
+
+        if (choice < 0 || choice > MAX_MENU_ITEM) {
+            std::cout << "Unknown menu option.\n";
+            continue;
+        }
+
+        try {
+            switch (choice) {
+                case 1:
+                    showEvents(system);
+                    break;
+                case 2:
+                    showEventDetails(system);
+                    break;
+                case 3:
+                    bookTicket(system);
+                    break;
+                case 4:
+                    cancelBooking(system);
+                    break;
+                case 5:
+                    showBookings(system);
+                    break;
+                case 6:
+                    showHistory(system);
+                    break;
+                case 7:
+                    filterByType(system);
+                    break;
+                default:
+                    std::cout << "Option is not implemented.\n";
+                    break;
+            }
+        } catch (const BookingException& exception) {
+            std::cout << "Error: " << exception.what() << '\n';
+        } catch (const std::exception& exception) {
+            std::cout << "Unexpected error: " << exception.what() << '\n';
+        }
+    }
+
+    return 0;
+}
