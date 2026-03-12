@@ -181,3 +181,17 @@ void filterByType(const BookingSystem& system) {
             break;
     }
 }
+
+void showMenu() {
+    printHeader("Ticket Booking Console System");
+    std::cout << "1. Show all events\n";
+    std::cout << "2. Show event details\n";
+    std::cout << "3. Book ticket\n";
+    std::cout << "4. Cancel booking\n";
+    std::cout << "5. Show all bookings\n";
+    std::cout << "6. Show booking history\n";
+    std::cout << "7. Filter by type\n";
+    std::cout << "0. Exit\n";
+}
+
+}
