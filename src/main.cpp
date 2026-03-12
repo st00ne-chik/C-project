@@ -140,3 +140,44 @@ void showBookings(const BookingSystem& system) {
                   << std::setw(10) << BookingSystem::toString(booking.status) << booking.timestamp << '\n';
     }
 }
+
+void showHistory(const BookingSystem& system) {
+    printHeader("Booking history");
+    const auto& history = system.getHistory();
+    if (history.empty()) {
+        std::cout << "History is empty.\n";
+        return;
+    }
+
+    std::cout << std::left << std::setw(12) << "Action" << std::setw(10) << "BookingID" << std::setw(22) << "Timestamp"
+              << "Message\n";
+    std::cout << SEPARATOR << '\n';
+
+    for (const auto& entry : history) {
+        std::cout << std::left << std::setw(12) << BookingSystem::toString(entry.actionType) << std::setw(10)
+                  << entry.bookingId << std::setw(22) << entry.timestamp << entry.message << '\n';
+    }
+}
+
+void filterByType(const BookingSystem& system) {
+    printHeader("Filter by type");
+    std::cout << "1. Concert\n";
+    std::cout << "2. MovieSession\n";
+    std::cout << "3. TrainTrip\n";
+    const int option = readInt("Choose type: ");
+
+    switch (option) {
+        case 1:
+            showEvents(system, EventTypeFilter::Concert);
+            break;
+        case 2:
+            showEvents(system, EventTypeFilter::MovieSession);
+            break;
+        case 3:
+            showEvents(system, EventTypeFilter::TrainTrip);
+            break;
+        default:
+            std::cout << "Unknown filter type.\n";
+            break;
+    }
+}
