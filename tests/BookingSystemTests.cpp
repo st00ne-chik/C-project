@@ -82,3 +82,24 @@ TEST_F(BookingSystemTest, HistoryContainsCreatedAndCanceledEntries) {
     EXPECT_EQ(history.at(0).actionType, HistoryActionType::Created);
     EXPECT_EQ(history.at(1).actionType, HistoryActionType::Canceled);
 }
+
+TEST_F(BookingSystemTest, HistoryEntriesShareSameContextThroughSharedPtr) {
+    const Booking booking = system.bookSeat(1, 5, "Alice");
+    system.cancelBooking(booking.bookingId);
+
+    const auto& history = system.getHistory();
+    ASSERT_EQ(history.size(), 2);
+    ASSERT_TRUE(history.at(0).context);
+    ASSERT_TRUE(history.at(1).context);
+    EXPECT_EQ(history.at(0).context.get(), history.at(1).context.get());
+}
+
+TEST_F(BookingSystemTest, HistoryPayloadStoresTypeSafeDataWithVariant) {
+    const Booking booking = system.bookSeat(1, 6, "Alice");
+    system.cancelBooking(booking.bookingId);
+
+    const auto& history = system.getHistory();
+    ASSERT_EQ(history.size(), 2);
+    EXPECT_TRUE(std::holds_alternative<BookingCreatedPayload>(history.at(0).payload));
+    EXPECT_TRUE(std::holds_alternative<BookingCanceledPayload>(history.at(1).payload));
+}
