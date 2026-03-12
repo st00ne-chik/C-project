@@ -56,3 +56,29 @@ TEST_F(BookingSystemTest, CancelBookingFreesSeatAndChangesStatus) {
     EXPECT_TRUE(firstFreeSeat.has_value());
     EXPECT_EQ(*firstFreeSeat, 1);
 }
+
+TEST_F(BookingSystemTest, CancelMissingBookingThrowsException) {
+    EXPECT_THROW(system.cancelBooking(1000), BookingNotFoundException);
+}
+
+TEST_F(BookingSystemTest, EmptyCustomerNameThrowsException) {
+    EXPECT_THROW(system.bookSeat(1, 1, "   "), BookingException);
+}
+
+TEST_F(BookingSystemTest, NonExistingEventThrowsException) {
+    EXPECT_THROW(system.bookSeat(999, 1, "Alice"), EventNotFoundException);
+}
+
+TEST_F(BookingSystemTest, NonExistingSeatThrowsException) {
+    EXPECT_THROW(system.bookSeat(1, 999, "Alice"), BookingException);
+}
+
+TEST_F(BookingSystemTest, HistoryContainsCreatedAndCanceledEntries) {
+    const Booking booking = system.bookSeat(1, 4, "Alice");
+    system.cancelBooking(booking.bookingId);
+
+    const auto& history = system.getHistory();
+    ASSERT_EQ(history.size(), 2);
+    EXPECT_EQ(history.at(0).actionType, HistoryActionType::Created);
+    EXPECT_EQ(history.at(1).actionType, HistoryActionType::Canceled);
+}
