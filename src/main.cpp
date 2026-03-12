@@ -102,3 +102,41 @@ void showEventDetails(const BookingSystem& system) {
     }
     std::cout << '\n';
 }
+
+void bookTicket(BookingSystem& system) {
+    printHeader("Create booking");
+    const int eventId = readInt("Enter event id: ");
+    const int seatNumber = readInt("Enter seat number: ");
+    const std::string customerName = readLine("Enter customer name: ");
+
+    const Booking booking = system.bookSeat(eventId, seatNumber, customerName);
+    std::cout << "Booking created successfully.\n";
+    std::cout << "Booking ID: " << booking.bookingId << '\n';
+    std::cout << "Timestamp: " << booking.timestamp << '\n';
+}
+
+void cancelBooking(BookingSystem& system) {
+    printHeader("Cancel booking");
+    const int bookingId = readInt("Enter booking id: ");
+    system.cancelBooking(bookingId);
+    std::cout << "Booking " << bookingId << " canceled.\n";
+}
+
+void showBookings(const BookingSystem& system) {
+    printHeader("All bookings");
+    const auto& bookings = system.getBookings();
+    if (bookings.empty()) {
+        std::cout << "No bookings yet.\n";
+        return;
+    }
+
+    std::cout << std::left << std::setw(8) << "ID" << std::setw(8) << "Event" << std::setw(8) << "Seat"
+              << std::setw(20) << "Customer" << std::setw(10) << "Status" << "Timestamp\n";
+    std::cout << SEPARATOR << '\n';
+
+    for (const auto& booking : bookings) {
+        std::cout << std::left << std::setw(8) << booking.bookingId << std::setw(8) << booking.eventId
+                  << std::setw(8) << booking.seatNumber << std::setw(20) << booking.customerName.substr(0, 19)
+                  << std::setw(10) << BookingSystem::toString(booking.status) << booking.timestamp << '\n';
+    }
+}
